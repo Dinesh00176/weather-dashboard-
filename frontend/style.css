@@ -1,0 +1,457 @@
+/* Reset & Base */
+:root {
+    /* Dark Theme (Default) */
+    --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --card-hover: rgba(255, 255, 255, 0.08);
+    /* Dark mode hover */
+    --card-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #a7a7d4;
+    --input-bg: rgba(0, 0, 0, 0.2);
+    --input-border: rgba(255, 255, 255, 0.1);
+    --accent: #fbc2eb;
+    --accent-gradient: linear-gradient(to right, #a18cd1 0%, #fbc2eb 100%);
+    --font-main: 'Outfit', sans-serif;
+    --orb-color-1: #764ba2;
+    --orb-color-2: #667eea;
+}
+
+/* Light Theme Variables */
+body.light-mode {
+    --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    --card-bg: rgba(255, 255, 255, 0.65);
+    --card-hover: rgba(255, 255, 255, 0.85);
+    /* Light mode hover */
+    --card-border: rgba(255, 255, 255, 0.4);
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --input-bg: rgba(255, 255, 255, 0.5);
+    --input-border: rgba(0, 0, 0, 0.1);
+    --accent: #6366f1;
+    /* Indigo-ish */
+    --accent-gradient: linear-gradient(to right, #6366f1, #a855f7);
+    --orb-color-1: rgba(99, 102, 241, 0.3);
+    --orb-color-2: rgba(168, 85, 247, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    /* Fixed scrolling issue */
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Ambient Background Glow */
+.background-orb {
+    position: fixed;
+    /* Fixed so they don't scroll away */
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.4;
+    z-index: 0;
+    transition: background 0.5s ease;
+}
+
+.orb-1 {
+    width: 600px;
+    height: 600px;
+    background: var(--orb-color-1);
+    top: -20%;
+    left: -20%;
+    animation: floatOrb 8s infinite alternate;
+}
+
+.orb-2 {
+    width: 500px;
+    height: 500px;
+    background: var(--orb-color-2);
+    bottom: -10%;
+    right: -10%;
+    animation: floatOrb 10s infinite alternate-reverse;
+}
+
+@keyframes floatOrb {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        transform: translateY(50px) scale(1.1);
+    }
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 20;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle:hover {
+    transform: rotate(15deg) scale(1.1);
+    background: var(--card-hover);
+}
+
+/* Icon Switching Logic */
+.theme-toggle .sun-icon {
+    display: none;
+}
+
+.theme-toggle .moon-icon {
+    display: block;
+}
+
+/* In Light Mode, show Sun (to indicate you can switch back to dark, or vice versa? 
+   Usually user sees the icon of the mode they WANT to switch TO.
+   If currently Light -> show Moon (switch to Dark).
+   If currently Dark -> show Sun (switch to Light).
+*/
+/* Current state: Dark. We want to switch to Light. So show Sun. */
+body:not(.light-mode) .theme-toggle .sun-icon {
+    display: block;
+}
+
+body:not(.light-mode) .theme-toggle .moon-icon {
+    display: none;
+}
+
+/* Current state: Light. We want to switch to Dark. So show Moon. */
+body.light-mode .theme-toggle .sun-icon {
+    display: none;
+}
+
+body.light-mode .theme-toggle .moon-icon {
+    display: block;
+}
+
+
+/* Main Container */
+.container {
+    padding: 24px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+    margin: 40px 0;
+    /* Add margin to header/footer so it doesn't touch edges on small screens */
+}
+
+/* Weather Card */
+.weather-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: 30px;
+    padding: 40px 30px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Shine Effect removed or simplified for better light mode compat */
+.weather-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+.weather-card:hover::before {
+    left: 100%;
+}
+
+/* Header */
+.header h1 {
+    font-size: 1.25rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 24px;
+    color: var(--text-secondary);
+}
+
+/* Search Box */
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+#city-input {
+    flex: 1;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    padding: 14px 20px;
+    border-radius: 15px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: 0.3s;
+}
+
+#city-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+#search-btn {
+    width: 50px;
+    background: var(--accent-gradient);
+    border: none;
+    border-radius: 15px;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Weather Display */
+.weather-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.hidden {
+    display: none;
+}
+
+.location-badge {
+    margin-bottom: 10px;
+}
+
+.city-name {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.country-code {
+    font-size: 0.8rem;
+    vertical-align: super;
+    opacity: 0.7;
+    margin-left: 4px;
+}
+
+.main-weather {
+    margin: 20px 0 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.weather-icon {
+    width: 120px;
+    height: 120px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    margin-bottom: -10px;
+}
+
+.temp-container {
+    position: relative;
+    display: inline-block;
+}
+
+.temperature {
+    font-size: 5.5rem;
+    font-weight: 700;
+    line-height: 1;
+    /* Gradient text helper */
+    background: -webkit-linear-gradient(to bottom, var(--text-primary), var(--text-secondary));
+    background: linear-gradient(to bottom, var(--text-primary), var(--text-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.unit {
+    font-size: 1.5rem;
+    position: absolute;
+    top: 10px;
+    right: -25px;
+    color: var(--text-secondary);
+}
+
+.condition-text {
+    font-size: 1.1rem;
+    color: var(--accent);
+    text-transform: capitalize;
+    margin-top: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Stats Grid */
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.detail-item {
+    background: var(--card-bg);
+    /* Use card-bg but maybe slightly different? */
+    background: rgba(125, 125, 125, 0.05);
+    /* Neutral overlay */
+    padding: 15px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: 0.3s;
+    border: 1px solid transparent;
+}
+
+.detail-item:hover {
+    background: var(--card-hover);
+    transform: translateY(-2px);
+    border-color: var(--card-border);
+}
+
+.label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+
+.value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Loading & Error */
+.loading {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-secondary);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-left-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 20px;
+}
+
+/* Animations slideUp defined above */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .temperature {
+        font-size: 4rem;
+    }
+
+    .weather-card {
+        padding: 30px 20px;
+    }
+
+    /* Ensure toggle button isn't obscured on small screens, maybe move it? */
+    .theme-toggle {
+        top: 15px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+    }
+}
